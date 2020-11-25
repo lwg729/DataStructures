@@ -1,5 +1,7 @@
 package linkedList;
 
+import java.util.Stack;
+
 public class SingleLinkedListDemo {
 
     public static void main(String[] args) {
@@ -21,12 +23,27 @@ public class SingleLinkedListDemo {
 
         singleLinkedList.list();
 
-        System.out.println("原来链表的情况~~");
+        /*System.out.println("原来链表的情况~~");
 
-        HeroNode hero5 = new HeroNode(2,"小卢","玉麒麟------");
+        HeroNode hero5 = new HeroNode(2, "小卢", "玉麒麟------");
         singleLinkedList.update(hero5);
         singleLinkedList.delete(1);
         singleLinkedList.list();
+
+        System.out.println("有效的节点个数=" + SingleLinkedList.getLength(singleLinkedList.getHead()));
+        HeroNode indexNode = SingleLinkedList.getLastIndexNode(singleLinkedList.getHead(), 3);
+        System.out.println("indexNode=" + indexNode);*/
+
+
+        //反转单链表  其方法中需要头结点的参数用来指向下个节点
+        System.out.println("反转链表");
+        SingleLinkedList.reserveList(singleLinkedList.getHead());
+        singleLinkedList.list();
+
+        System.out.println("利用栈进行链表反转,链表结构没有被破坏-----------");
+        SingleLinkedList.reserveStack(singleLinkedList.getHead());
+        singleLinkedList.list();
+
     }
 
 
@@ -36,6 +53,56 @@ class SingleLinkedList {
     //初始化头结点,不存放数据,头结点不动
     private HeroNode head = new HeroNode(0, "", "");
 
+    //返回头结点
+    public HeroNode getHead() {
+        return head;
+    }
+
+    //将链表反转
+
+    public static void reserveList(HeroNode head) {
+        //反转需要两个以上的数据才能反转
+        if (head.next == null || head.next.next == null) {
+            return;
+        }
+
+        HeroNode cur = head.next;
+        HeroNode next = null;  //用于存放下一个节点,放置拿走前一个节点,链表的下个节点找不到
+
+        HeroNode reserveHead = new HeroNode(0, "", "");  //初始化一个新的节点
+        while (cur != null) {
+            //先暂时保存当前节点的下一个节点
+            next = cur.next;
+            //将当前节点的下一个节点指向新链表的最前端
+            cur.next = reserveHead.next;
+            //将新head的下一个节点指向当前节点的数据
+            reserveHead.next = cur;
+            //当前节点向后移动
+            cur = next;
+        }
+        //将原先的头结点代替新生成的头结点
+        head.next = reserveHead.next;
+    }
+
+    //反转链表方式2 利用栈
+    public static void reserveStack(HeroNode head) {
+        //链表为空
+        if (head.next == null) {
+            return;
+        }
+
+        HeroNode cur = head.next;
+        //创建一个栈
+        Stack<HeroNode> stack = new Stack<HeroNode>();
+        while (cur!=null){
+            stack.push(cur);
+            cur=cur.next;
+        }
+        while (stack.size()>0){
+            System.out.println(stack.pop());
+        }
+
+    }
 
     //添加节点到单向链表
     //思路，当不考虑编号顺序时
@@ -96,23 +163,23 @@ class SingleLinkedList {
         }
 
         HeroNode temp = head;
-        boolean flag=false;
+        boolean flag = false;
 
-        while (true){
-            if (temp==null){
+        while (true) {
+            if (temp == null) {
                 break;
             }
-            if (temp.no==newHeroNode.no){
-                flag=true;
+            if (temp.no == newHeroNode.no) {
+                flag = true;
                 break;
             }
-            temp=temp.next;
+            temp = temp.next;
         }
 
-        if (flag){
-            temp.name=newHeroNode.name;
-            temp.nickName=newHeroNode.nickName;
-        }else {
+        if (flag) {
+            temp.name = newHeroNode.name;
+            temp.nickName = newHeroNode.nickName;
+        } else {
             System.out.printf("没有找到 编号 %d 的节点，不能修改\n", newHeroNode.no);
         }
     }
@@ -137,32 +204,68 @@ class SingleLinkedList {
             temp = temp.next;
         }
     }
-    public void delete(int no){
-        if (head.next==null){
+
+    public void delete(int no) {
+        if (head.next == null) {
             return;
         }
-        HeroNode temp=head;
+        HeroNode temp = head;
         boolean flag = false;
 
-        while (true){
-            if (temp==null){
+        while (true) {
+            if (temp == null) {
                 break;
             }
-            if (temp.next.no==no){
-                flag=true;
+            if (temp.next.no == no) {
+                flag = true;
                 break;
             }
 
-            temp=temp.next;
+            temp = temp.next;
         }
 
-        if (flag){
-            temp.next=temp.next.next;
+        if (flag) {
+            temp.next = temp.next.next;
 
-        }else {
+        } else {
             System.out.printf("要删除的 %d 节点不存在\n", no);
         }
 
+    }
+
+    //获取单链表的长度
+    public static int getLength(HeroNode head) {
+        if (head.next == null) {
+            return 0;
+        }
+
+        int length = 0;
+        HeroNode cur = head.next;
+        while (cur != null) {
+            length++;
+            cur = cur.next;
+        }
+        return length;
+    }
+
+    //获取单链表的倒数第k个节点
+
+    public static HeroNode getLastIndexNode(HeroNode head, int index) {
+        if (head.next == null) {
+            return null;
+        }
+        int length = getLength(head);
+
+        HeroNode cur = head.next;
+
+        if (index <= 0 || index > length) {
+            return null;
+        }
+
+        for (int i = 0; i < length - index; i++) {  //循环length-index次
+            cur = cur.next;
+        }
+        return cur;
     }
 
 }
