@@ -63,32 +63,42 @@ public class BinarySortTree {
         //找到targetNode的父节点
         Node parent = searchParent(value);
         //如果删除的节点是叶子节点
-        if (targetNode.left == null && targetNode.right == null) {
+        if (targetNode.left == null && targetNode.right == null) {   //没有子节点
             //判断删除的节点是父节点的左节点还是右节点
             if (parent.left != null && parent.left.value == targetNode.value) {
                 parent.left = null;
             } else if (parent.right != null && parent.right.value == targetNode.value) {
                 parent.right = null;
             }
-        } else if (targetNode.right != null && targetNode.left != null) {
+        } else if (targetNode.right != null && targetNode.left != null) {  //有两个子节点
             int min = delRightTreeMin(targetNode.right);
             targetNode.value = min;
         } else {
             //删除节点的子节点有左节点
             if (targetNode.left != null) {
-                //如果要删除的节点是父节点的左节点还是右节点
-                if (parent.left != null && parent.left.value == targetNode.value) {
-                    parent.left = targetNode.left;
-                } else if (parent.right != null && parent.right.value == targetNode.value) {
-                    parent.right = targetNode.left;
+                if (parent != null) {
+                    //如果要删除的节点是父节点的左节点还是右节点
+                    if (parent.left != null && parent.left.value == targetNode.value) {
+                        parent.left = targetNode.left;
+                    } else if (parent.right != null && parent.right.value == targetNode.value) {
+                        parent.right = targetNode.left;
+                    }
+                } else {
+                    root = targetNode.left;
                 }
+
             } else {
-                //删除节点有右子节点
-                if (parent.left != null && parent.left.value == targetNode.value) {
-                    parent.left = targetNode.right;
-                } else if (parent.right != null && parent.right.value == targetNode.value) {
-                    parent.right = targetNode.right;
+                if (parent != null) {
+                    //删除节点有右子节点
+                    if (parent.left != null && parent.left.value == targetNode.value) {
+                        parent.left = targetNode.right;
+                    } else if (parent.right != null && parent.right.value == targetNode.value) {
+                        parent.right = targetNode.right;
+                    }
+                } else {
+                    root = targetNode.right;
                 }
+
             }
         }
 
@@ -120,14 +130,20 @@ public class BinarySortTree {
         for (int i = 0; i < arr.length; i++) {
             sortTree.add(new Node(arr[i]));
         }
-        System.out.println("删除前----------------------------");
+
         //中序遍历二叉树
         sortTree.infixOrder();
+        System.out.println("删除前----------------------------");
 
-
-        /*sortTree.delete(2);
-        sortTree.delete(12);*/
+        sortTree.delete(2);
+        sortTree.delete(5);
+        sortTree.delete(9);
+        sortTree.delete(12);
+        sortTree.delete(7);
+        sortTree.delete(3);
         sortTree.delete(10);
+        sortTree.delete(1);
+
         System.out.println("删除后------------");
         sortTree.infixOrder();
     }
